@@ -1,0 +1,21 @@
+# Dune build artifacts
+_build/
+*.install
+*.opam
+*.merlin
+*.mli.depends
+*.ml.depends
+
+# OCaml REPL history
+.ocamlinit
+.utop-history
+
+# Dune log files
+dune-project.lock
+.dune/
+
+# Editor stuff
+*.swp
+*.swo
+*.vscode/
+.DS_Store
