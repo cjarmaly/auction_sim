@@ -12,24 +12,23 @@ jobs:
 
     container:
       image: ocaml/opam:debian-12-ocaml-5.1
-      options: --user=opam
+      options: --user root
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Set up permissions
+      run: chown -R opam:opam .
+
     - name: Install dependencies
       run: |
-        sudo chown -R opam:opam .
-        eval $(opam env)
-        opam install dune core ounit2
+        su opam -c 'eval $(opam env) && opam install dune core ounit2'
 
     - name: Build
       run: |
-        eval $(opam env)
-        dune build
+        su opam -c 'eval $(opam env) && dune build'
 
     - name: Run tests
       run: |
-        eval $(opam env)
-        dune runtest
+        su opam -c 'eval $(opam env) && dune runtest'
