@@ -20,9 +20,13 @@ jobs:
       with:
         ocaml-compiler: 5.1.0
 
+    - name: Update Opam
+      run: opam update
+      
     - name: Install dependencies
       run: |
         opam install dune core ounit2
+      
 
     - name: Build project
       run: dune build
