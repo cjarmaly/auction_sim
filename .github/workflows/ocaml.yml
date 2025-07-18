@@ -9,26 +9,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
+
+    container:
+      image: ocaml/opam:debian-12-ocaml-5.1
+      options: --user=opam
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up OCaml
-      uses: ocaml/setup-ocaml@v2
-      with:
-        ocaml-compiler: 5.1.0
-        disable-sudo: true
-
     - name: Install dependencies
       run: |
+        sudo chown -R opam:opam .
+        eval $(opam env)
         opam install dune core ounit2
 
-    - name: Build the project
-      run: dune build
+    - name: Build
+      run: |
+        eval $(opam env)
+        dune build
 
     - name: Run tests
-      run: dune runtest
+      run: |
+        eval $(opam env)
+        dune runtest
