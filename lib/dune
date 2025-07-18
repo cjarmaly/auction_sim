@@ -1,0 +1,6 @@
+(library
+ (name auction)
+ (public_name auction_sim)
+ (modules auction bidder strategy)
+ (libraries core))
+
