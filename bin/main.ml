@@ -1,4 +1,3 @@
 open Core
 
-let () =
-  print_endline "Auction Simulator: WIP"
+let () = print_endline "Auction Simulator: WIP"
