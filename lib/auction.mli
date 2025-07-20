@@ -1,5 +1,10 @@
-type auction_type = FirstPrice | SecondPrice | English | Dutch
-type winner = string * float
 type bids = (string * float) list
+type winner = string * float
 
-val run_auction : auction_type -> bids -> winner
+type auction_type =
+  | FirstPrice
+  | SecondPrice
+  | English
+  | Dutch
+
+val run_auction : auction_type -> bids:bids -> winner

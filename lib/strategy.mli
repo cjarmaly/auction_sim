@@ -1,3 +1,5 @@
-val truthful : float -> float list -> float
-val overbid : float -> float list -> float
-val underbid : float -> float list -> float
+type strategy_type = float -> float list -> float
+
+val truthful : strategy_type
+val overbid : strategy_type
+val underbid : strategy_type

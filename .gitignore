@@ -1,7 +1,6 @@
 # Dune build artifacts
 _build/
 *.install
-*.opam
 *.merlin
 *.mli.depends
 *.ml.depends

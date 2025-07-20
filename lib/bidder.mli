@@ -1,4 +1,10 @@
-type t = { name : string; strategy : float list -> float }
+open Strategy
 
-val make : string -> (float list -> float) -> t
-val bid : t -> float list -> float
+type bidder = {
+  name : string;
+  strategy : strategy_type;
+}
+
+val make : string -> strategy_type -> bidder
+val bid : bidder -> float -> float list -> float
+
