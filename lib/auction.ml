@@ -6,14 +6,39 @@ type bids = (string * float) list
 type winner = string * float
 
 (* Runs the selected auction type and returns the winner and payment *)
-let run_auction (auction_type : auction_type) ~(bids : bids) : winner =
-  let sorted_bids =
-    List.sort bids ~compare:(fun (_, b1) (_, b2) -> Float.compare b2 b1)
+let run_auction
+    ~(auction_type : auction_type)
+    ~(bidders : Bidder.bidder list)
+    ~(private_values : (string * float) list)
+    : winner =
+  let lookup_value name =
+    List.Assoc.find ~equal:String.equal private_values name
   in
+
+  let bids =
+    List.filter_map bidders ~f:(fun b ->
+      Option.map (lookup_value b.name) ~f:(fun v ->
+        let amount = Bidder.bid b v [] in
+        (b.name, amount)))
+  in
+
+  let sorted_bids =
+    List.sort bids ~compare:(fun (_, x) (_, y) -> Float.compare y x)
+  in
+
   match auction_type, sorted_bids with
-  | (_, []) -> failwith "No valid bids"
-  | (FirstPrice, (w, a) :: _) -> (w, a)
-  | (SecondPrice, (w, _) :: (_, second) :: _) -> (w, second)
-  | (SecondPrice, [_]) -> failwith "Not enough bidders for second-price auction"
-  | (_, _) -> failwith "Not implemented yet"
+  | _, [] -> failwith "No valid bids"
+
+  | FirstPrice, (winner, amount) :: _ ->
+      (winner, amount)
+
+  | SecondPrice, (winner, _) :: (_, second_price) :: _ ->
+      (winner, second_price)
+
+  | SecondPrice, _ ->
+      failwith "Not enough bids for second-price auction"
+
+  | English, _ | Dutch, _ ->
+      failwith "Not implemented yet"
+
 
