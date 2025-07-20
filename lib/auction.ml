@@ -10,9 +10,9 @@ let run_auction (auction_type : auction_type) ~(bids : bids) : winner =
     List.sort bids ~compare:(fun (_, b1) (_, b2) -> Float.compare b2 b1)
   in
   match auction_type, sorted_bids with
+  | (_, []) -> failwith "No valid bids"
   | (FirstPrice, (w, a) :: _) -> (w, a)
   | (SecondPrice, (w, _) :: (_, second) :: _) -> (w, second)
-  | (FirstPrice | SecondPrice, []) -> failwith "No valid bids"
   | (SecondPrice, [_]) -> failwith "Not enough bidders for second-price auction"
-  | (English | Dutch, _) -> failwith "Not implemented yet"
+  | (_, _) -> failwith "Not implemented yet"
 
