@@ -7,11 +7,11 @@ open Auction_sim.Auction
 
 (** Command-line argument: auction type as string. *)
 let auction_type_str : string ref = ref "FirstPrice"
-(** Command-line argument: number of bidders. *)
+(* Command-line argument: number of bidders. *)
 let num_bidders : int ref = ref 5
-(** Command-line argument: strategy as string. *)
+(* Command-line argument: strategy as string. *)
 let strategy_str : string ref = ref "truthful"
-(** Command-line argument: random seed. *)
+(* Command-line argument: random seed. *)
 let seed : int option ref = ref None
 
 
