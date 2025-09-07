@@ -85,13 +85,36 @@ dune exec bin/main.exe -- -a English -n 4 -s random --seed 42
 - `random`: Bidder bids a random value between 50% and 100% of their value
 - `max_bidder`: Bidder bids the highest public bid plus a small increment, or their value if no bids
 
-### Output
 
-The CLI prints:
-- Auction type, number of bidders, and strategy
-- Each bidder's private value
-- Winner and winning bid
-- All bids submitted
+## Batch Simulation & CSV Output
+
+You can run many auctions in a row and collect statistics using the `--batch` option. Results can be saved to a CSV file with `--csv`.
+
+| Option         | Description                                                      |
+|--------------- |------------------------------------------------------------------|
+| `--batch <N>`  | Run N simulations and print summary statistics                   |
+| `--csv <file>` | Write batch results to a CSV file (one row per simulation)       |
+
+### Example Batch Commands
+
+Run 100 simulations and print summary statistics:
+
+```bash
+dune exec bin/main.exe -- --batch 100
+```
+
+Run 100 simulations and save results to a CSV file:
+
+```bash
+dune exec bin/main.exe -- --batch 100 --csv results.csv
+```
+
+You can combine these with other options (e.g., `-a`, `-n`, `-s`, `--seed`) to customize the batch runs.
+
+### Batch Output
+
+- Console: Prints average winning bid and win counts for each bidder.
+- CSV: Each row contains the trial number, winner, winning amount, all private values, and all bids.
 
 ## Project Structure
 
