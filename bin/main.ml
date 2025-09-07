@@ -99,8 +99,20 @@ let write_csv_row oc trial (winner, amount, private_values, bids) =
 let main () : unit =
   if !batch > 0 then begin
     let results = List.init !batch ~f:(fun _ -> run_once ()) in
-    let avg_amount =
-      List.fold_left results ~init:0.0 ~f:(fun acc (_, amt, _, _) -> acc +. amt) /. float_of_int !batch
+    let winning_bids = List.map results ~f:(fun (_, amt, _, _) -> amt) in
+    let avg_amount = List.fold_left winning_bids ~init:0.0 ~f:( +. ) /. float_of_int !batch in
+    let min_amount = List.fold_left winning_bids ~init:Float.infinity ~f:Float.min in
+    let max_amount = List.fold_left winning_bids ~init:Float.neg_infinity ~f:Float.max in
+    let stddev =
+      let mean = avg_amount in
+      let sumsq = List.fold_left winning_bids ~init:0.0 ~f:(fun acc x -> acc +. (x -. mean) ** 2.) in
+      sqrt (sumsq /. float_of_int !batch)
+    in
+    let all_bids = List.concat_map results ~f:(fun (_, _, _, bids) -> List.map bids ~f:snd) in
+    let bid_mean = List.fold_left all_bids ~init:0.0 ~f:( +. ) /. float_of_int (List.length all_bids) in
+    let bid_var =
+      let sumsq = List.fold_left all_bids ~init:0.0 ~f:(fun acc x -> acc +. (x -. bid_mean) ** 2.) in
+      sumsq /. float_of_int (List.length all_bids)
     in
     let win_counts =
       List.fold_left results ~init:String.Map.empty ~f:(fun acc (winner, _, _, _) ->
@@ -108,6 +120,10 @@ let main () : unit =
     in
     Printf.printf "\nBatch mode: %d simulations\n" !batch;
     Printf.printf "Average winning bid: %.2f\n" avg_amount;
+    Printf.printf "Min winning bid: %.2f\n" min_amount;
+    Printf.printf "Max winning bid: %.2f\n" max_amount;
+    Printf.printf "Stddev winning bid: %.2f\n" stddev;
+    Printf.printf "Bid variance: %.2f\n" bid_var;
     Printf.printf "Win counts:\n";
     Map.iteri win_counts ~f:(fun ~key ~data -> Printf.printf "  %s: %d\n" key data);
     (match !csv_file with
