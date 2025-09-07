@@ -29,6 +29,7 @@ Requires `opam` and `dune`.
 opam install dune core ounit2
 ```
 
+
 ## Build and Run
 
 ### Build the project
@@ -37,17 +38,60 @@ opam install dune core ounit2
 dune build
 ```
 
-### Run the executable
+### Run the executable (basic)
 
 ```bash
-dune exec bin/main.exe
+dune exec bin/main.exe -- [OPTIONS]
 ```
 
-### Run the test suite
+## Command-Line Usage
+
+You can configure the auction type, number of bidders, bidding strategy, and random seed via CLI options:
+
+| Option         | Description                                                                 |
+|--------------- |-----------------------------------------------------------------------------|
+| `-a <type>`    | Auction type: `FirstPrice`, `SecondPrice`, `English`, or `Dutch`            |
+| `-n <int>`     | Number of bidders (default: 5)                                               |
+| `-s <strategy>`| Bidding strategy: `truthful`, `overbid`, `underbid`, `risk_averse`, `random`, `max_bidder` |
+| `--seed <int>` | Set random seed for reproducibility                                          |
+
+### Example CLI Commands
+
+Run a first-price auction with 10 bidders, all using the overbid strategy:
 
 ```bash
-dune runtest
+dune exec bin/main.exe -- -a FirstPrice -n 10 -s overbid
 ```
+
+Run an English auction with 4 bidders, random strategy, and a fixed seed:
+
+```bash
+dune exec bin/main.exe -- -a English -n 4 -s random --seed 42
+```
+
+### Available Auction Types
+
+- `FirstPrice`: Highest bidder wins and pays their bid
+- `SecondPrice`: Highest bidder wins, pays second-highest bid
+- `English`: Ascending open auction (last remaining wins)
+- `Dutch`: Descending price, first to accept wins
+
+### Available Strategies
+
+- `truthful`: Bidder bids their true value
+- `overbid`: Bidder bids 120% of their value
+- `underbid`: Bidder bids 80% of their value
+- `risk_averse`: Bidder bids 60% of their value
+- `random`: Bidder bids a random value between 50% and 100% of their value
+- `max_bidder`: Bidder bids the highest public bid plus a small increment, or their value if no bids
+
+### Output
+
+The CLI prints:
+- Auction type, number of bidders, and strategy
+- Each bidder's private value
+- Winner and winning bid
+- All bids submitted
 
 ## Project Structure
 
